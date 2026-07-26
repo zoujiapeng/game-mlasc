@@ -19,6 +19,7 @@ namespace LumenKart
         private Quaternion[] steerBaseRotations;
         private float wheelSpin;
         private bool shieldVisible;
+        private Vector3 shieldBaseScale = Vector3.one;
 
         private void Awake()
         {
@@ -34,6 +35,7 @@ namespace LumenKart
 
             wheelBaseRotations = CaptureRotations(wheelMeshes);
             steerBaseRotations = CaptureRotations(frontSteerPivots);
+            shieldBaseScale = shieldVisual != null ? shieldVisual.transform.localScale : Vector3.one;
             SetShieldVisible(false);
         }
 
@@ -75,6 +77,7 @@ namespace LumenKart
             bodyBaseRotation = bodyRoot != null ? bodyRoot.localRotation : Quaternion.identity;
             wheelBaseRotations = CaptureRotations(wheelMeshes);
             steerBaseRotations = CaptureRotations(frontSteerPivots);
+            shieldBaseScale = shieldVisual != null ? shieldVisual.transform.localScale : Vector3.one;
             SetShieldVisible(false);
         }
 
@@ -84,6 +87,10 @@ namespace LumenKart
             if (shieldVisual != null)
             {
                 shieldVisual.SetActive(visible);
+                if (visible)
+                {
+                    shieldVisual.transform.localScale = shieldBaseScale;
+                }
             }
         }
 
@@ -162,7 +169,7 @@ namespace LumenKart
             }
 
             float pulse = 1f + Mathf.Sin(Time.time * 5.5f) * 0.035f;
-            shieldVisual.transform.localScale = Vector3.one * pulse;
+            shieldVisual.transform.localScale = shieldBaseScale * pulse;
             shieldVisual.transform.Rotate(0f, 28f * Time.deltaTime, 0f, Space.Self);
         }
 
