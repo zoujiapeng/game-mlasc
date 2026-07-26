@@ -73,14 +73,6 @@ namespace LumenKart
             {
                 manager = RaceManager.Instance;
             }
-        }
-
-        private void Start()
-        {
-            if (manager == null)
-            {
-                manager = RaceManager.Instance;
-            }
 
             manager?.Register(this);
         }
