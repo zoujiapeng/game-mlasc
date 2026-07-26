@@ -50,6 +50,7 @@ namespace LumenKart
         private IEnumerator Start()
         {
             yield return null;
+            RaceCheckpoint.RebuildRegistry();
             foreach (RaceProgress racer in racers)
             {
                 racer.Controller.SetControlsEnabled(false);
@@ -123,6 +124,11 @@ namespace LumenKart
             }
 
             racers.Add(racer);
+            if (!raceStarted && racer.Controller != null)
+            {
+                racer.Controller.SetControlsEnabled(false);
+            }
+
             if (racer.IsPlayer)
             {
                 player = racer;
