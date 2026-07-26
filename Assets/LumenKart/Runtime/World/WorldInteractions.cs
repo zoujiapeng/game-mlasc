@@ -192,9 +192,16 @@ namespace LumenKart
                 {
                     target.Controller.SpinOut(0.78f);
                 }
+
+                Destroy(gameObject);
+                return;
             }
 
-            Destroy(gameObject);
+            // Checkpoints, pickups, and boost pads are triggers. They should not consume a pulse.
+            if (!other.isTrigger)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 
