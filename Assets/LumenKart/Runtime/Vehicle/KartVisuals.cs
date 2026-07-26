@@ -151,13 +151,7 @@ namespace LumenKart
             bool accelerate = controller.ControlsEnabled && controller.CurrentInput.Throttle > 0.1f;
             SetEmission(exhaustParticles, accelerate || controller.IsBoosting, controller.IsBoosting ? 24f : 8f);
             SetEmission(driftParticles, controller.IsDrifting && controller.IsGrounded, 10f + controller.DriftTier * 8f);
-
-            if (boostParticles != null)
-            {
-                ParticleSystem.EmissionModule emission = boostParticles.emission;
-                emission.enabled = controller.IsBoosting;
-                emission.rateOverTime = controller.IsBoosting ? 32f : 0f;
-            }
+            SetEmission(boostParticles, controller.IsBoosting, 32f);
         }
 
         private void AnimateShield()
@@ -197,14 +191,28 @@ namespace LumenKart
 
             foreach (ParticleSystem system in systems)
             {
-                if (system == null)
-                {
-                    continue;
-                }
+                SetEmission(system, enabled, rate);
+            }
+        }
 
-                ParticleSystem.EmissionModule emission = system.emission;
-                emission.enabled = enabled;
-                emission.rateOverTime = enabled ? rate : 0f;
+        private static void SetEmission(ParticleSystem system, bool enabled, float rate)
+        {
+            if (system == null)
+            {
+                return;
+            }
+
+            ParticleSystem.EmissionModule emission = system.emission;
+            emission.enabled = enabled;
+            emission.rateOverTime = enabled ? rate : 0f;
+
+            if (enabled && !system.isPlaying)
+            {
+                system.Play();
+            }
+            else if (!enabled && system.isPlaying)
+            {
+                system.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             }
         }
     }
