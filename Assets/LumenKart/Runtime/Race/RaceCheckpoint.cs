@@ -14,7 +14,8 @@ namespace LumenKart
 
         public int Index => index;
         public int PathSampleIndex => pathSampleIndex;
-        public Vector3 RespawnPosition => transform.position + transform.forward * 2.25f;
+        public Vector3 RespawnPosition =>
+            transform.position + transform.forward * 2.25f - Vector3.up * 1.02f;
         public Quaternion RespawnRotation => Quaternion.LookRotation(transform.forward, Vector3.up);
 
         private void OnEnable()
@@ -44,6 +45,17 @@ namespace LumenKart
         {
             Registry.TryGetValue(checkpointIndex, out RaceCheckpoint checkpoint);
             return checkpoint;
+        }
+
+        public static void RebuildRegistry()
+        {
+            Registry.Clear();
+            RaceCheckpoint[] checkpoints =
+                UnityEngine.Object.FindObjectsByType<RaceCheckpoint>(FindObjectsSortMode.None);
+            foreach (RaceCheckpoint checkpoint in checkpoints)
+            {
+                Registry[checkpoint.index] = checkpoint;
+            }
         }
 
         private void OnTriggerEnter(Collider other)
